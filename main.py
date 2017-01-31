@@ -129,11 +129,14 @@ def send_call(call_data='report', call_ip=None, call_argument=''):
                 if recv_string[0:5] == 'valid':
                     # print "received packet: ", recv_string
                     # print "from: ", addr
-
-                    try:
-                        point_data = json.loads(recv_string[5:])
-                        print EndPoint(point_data, addr)
-                    except ValueError:
+                    if call_data == 'report':
+                        try:
+                            point_data = json.loads(recv_string[5:])
+                            endpoints.append(EndPoint(point_data, addr))
+                        except ValueError:
+                            print addr[0] + ': ' + recv_string[5:]
+                            pass
+                    else:
                         print addr[0] + ': ' + recv_string[5:]
 
     # close the socket
@@ -169,8 +172,8 @@ if __name__ == '__main__':
 
     send_call()
     time.sleep(1)
-    # if len(endpoints) > 0:
-    #     for endpoint in endpoints:
-    #         print endpoint
-    # else:
-    #     print 'No endpoints found!'
+    if len(endpoints) > 0:
+        for endpoint in endpoints:
+            print endpoint
+    else:
+        print 'No endpoints found!'
