@@ -108,9 +108,9 @@ if __name__ == '__main__':
         except socket.error:
             continue
         recv_string = u.decrypt(data, KEY)
-        print "received packet: ", recv_string
-        print "from: ", addr
         if recv_string[:5] == 'valid':
+            print "received packet: ", recv_string
+            print "from: ", addr
             index = recv_string.find('_')
             action_result = operations.get(recv_string[5:index], do_nothing)(recv_string[index+1:])
             if action_result:
