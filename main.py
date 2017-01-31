@@ -26,7 +26,14 @@ import getopt
 
 
 # get local ip
-OWN_IP = socket.gethostbyname(socket.gethostname())
+if sys.platform.startswith("linux"):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.connect(("gmail.com", 80))
+    OWN_IP = sock.getsockname()[0][:-1]
+    sock.close()
+else:
+    OWN_IP = socket.gethostbyname(socket.gethostname())
+
 SEND_PORTNUM = 9320
 RECV_PORT_NUMBER = 9321
 
@@ -122,10 +129,11 @@ def send_call(call_data='report', call_ip=None, call_argument=''):
                 if recv_string[0:5] == 'valid':
                     # print "received packet: ", recv_string
                     # print "from: ", addr
-                    if call_data == 'report':
+
+                    try:
                         point_data = json.loads(recv_string[5:])
-                        endpoints.append(EndPoint(point_data, addr))
-                    else:
+                        print EndPoint(point_data, addr)
+                    except ValueError:
                         print addr[0] + ': ' + recv_string[5:]
 
     # close the socket
@@ -161,8 +169,8 @@ if __name__ == '__main__':
 
     send_call()
     time.sleep(1)
-    if len(endpoints) > 0:
-        for endpoint in endpoints:
-            print endpoint
-    else:
-        print 'No endpoints found!'
+    # if len(endpoints) > 0:
+    #     for endpoint in endpoints:
+    #         print endpoint
+    # else:
+    #     print 'No endpoints found!'
