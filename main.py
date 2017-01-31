@@ -110,6 +110,8 @@ def send_call(call_data='report', call_ip=None, call_argument=''):
     timeout = time.time() + wait_time
 
     while True:
+        if time.time() > timeout:
+            break
         data = ''
         try:
             ready = select.select([s], [], [], wait_time)
@@ -119,9 +121,6 @@ def send_call(call_data='report', call_ip=None, call_argument=''):
                     continue
         except socket.error:
             continue
-
-        if time.time() > timeout:
-            break
 
         for key in KEYS:
             if data:
