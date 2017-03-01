@@ -23,61 +23,17 @@ import sys
 
 KEY = 'bonobo'
 
-if sys.platform.startswith("linux"):
-    import RPi.GPIO as GPIO
-
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(26, GPIO.OUT)
-
-    GPIO.output(26, False)
-
 
 def blink(arg):
-    if sys.platform.startswith("win"):
-        return 'not available'
-
-    import RPi.GPIO as GPIO
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(26, GPIO.OUT)
-
-    GPIO.output(26, False)
-
-    for i in range(0, int(arg)):
-        GPIO.output(26, False)
-        time.sleep(0.5)
-        GPIO.output(26, True)
-        time.sleep(0.5)
-        GPIO.output(26, False)
-
-    return "done"
+    return 'not available'
 
 
 def report(arg):
     prepared_data = {
-        'description': 'windows dummy endpoint',
+        'description': 'dummy endpoint',
         'temperature': '15C',
-        'operations': ['report']
+        'operations': operations.keys()
     }
-
-    if sys.platform.startswith("linux"):
-        import Adafruit_BMP.BMP085 as BMP085
-        import Adafruit_DHT
-        sensor_a = BMP085.BMP085()
-        sensor_b = Adafruit_DHT.DHT22
-        pin = 17
-        humidity, temperature = Adafruit_DHT.read_retry(sensor_b, pin)
-        prepared_data = {
-            'description': 'Raspberry Pi, west-side balcony',
-            'operations': ['report'],
-            'temp_worse': str(round(sensor_a.read_temperature(), 1)) + ' degrees centigrade',
-            'pressure': str(round(sensor_a.read_pressure() / 100, 0)) + ' hPa',
-            'altitude': str(round(sensor_a.read_altitude(), 0)) + ' m',
-            'sealevel_pressure': str(round(sensor_a.read_sealevel_pressure(250) / 100, 0)) + ' hPa',
-            'temp': str(round(temperature, 1)) + ' degrees centigrade',
-            'humidity': str(round(humidity, 1)) + ' %',
-        }
 
     jsond_data = json.dumps(prepared_data)
 
